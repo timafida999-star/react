@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 0 — JavaScript Refresher</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <h1>Task 0 — JavaScript Refresher</h1>
+    <p>Tamerlan · Issakhanov</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill"></div></div>
+
+  <div class="carousel">
+    <div class="carousel-track" id="track">
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">1</span>Variables and Data Types</h2>
+        <p class="slide-desc">Student variables, their types, null vs undefined, primitive vs reference values, a template literal.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">let studentName = "Aigerim";
+let age = 21;
+let isActive = true;
+let courses = ["Math", "CS", "Physics"];
+let address = { city: "Almaty", street: "Abay Ave" };
+
+let scholarship = null;
+let graduationYear;</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s1-values"></pre>
+        <div class="section-label">Template literal</div>
+        <pre class="output" id="out-s1-sentence"></pre>
+        <div class="note"><b>Primitive vs reference:</b> <span id="out-s1-kinds"></span></div>
+        <div class="section-label">Answers</div>
+        <div class="qa"><span class="q">let vs const?</span> <code class="inline">let</code> can be reassigned later; <code class="inline">const</code> cannot be reassigned (though if it holds an object/array, the contents inside it can still be mutated — only the binding itself is locked).</div>
+        <div class="qa"><span class="q">typeof null?</span> Returns <code class="inline">"object"</code> — a historical bug in JS that was never fixed because fixing it would break old code.</div>
+        <div class="qa"><span class="q">Primitive types?</span> <code class="inline">string</code>, <code class="inline">number</code>, <code class="inline">boolean</code>, <code class="inline">undefined</code>, <code class="inline">null</code>, <code class="inline">bigint</code>, <code class="inline">symbol</code>.</div>
+        <div class="note"><b>Insight:</b> <code class="inline">null</code> is a value I choose to assign to say "empty on purpose", while <code class="inline">undefined</code> is what JS gives me automatically when something was never assigned.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">2</span>Arrays</h2>
+        <p class="slide-desc">Working with <code class="inline">[3, 7, 2, 10, 5]</code> using map, filter, find, reduce, includes — without mutating the original.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const numbers = [3, 7, 2, 10, 5];
+
+const doubled       = numbers.map(n => n * 2);
+const greaterThan5   = numbers.filter(n => n > 5);
+const firstOver5     = numbers.find(n => n > 5);
+const total          = numbers.reduce((sum, n) => sum + n, 0);
+const has10          = numbers.includes(10);</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s2"></pre>
+        <div class="note"><b>Insight:</b> <code class="inline">map</code>, <code class="inline">filter</code>, and <code class="inline">reduce</code> all return a brand-new array — the original <code class="inline">numbers</code> array is never touched.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">3</span>Arrays of Objects</h2>
+        <p class="slide-desc">Four students with id/grade, queried without modifying the original objects.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const students = [
+  { id: 1, name: "Anna", grade: 85 },
+  { id: 2, name: "John", grade: 62 },
+  { id: 3, name: "Sara", grade: 91 },
+  { id: 4, name: "Mike", grade: 55 },
+];
+
+const passing      = students.filter(s => s.grade >= 70);
+const names        = students.map(s => s.name);
+const studentById3 = students.find(s => s.id === 3);
+const topStudent   = students.reduce((top, s) => (s.grade > top.grade ? s : top));
+const average      = students.reduce((sum, s) => sum + s.grade, 0) / students.length;
+const withPassFlag = students.map(s => ({ ...s, passed: s.grade >= 70 }));</pre>
+        <div class="section-label">Original students</div>
+        <div id="out-s3-original"></div>
+        <div class="section-label">Passing (grade &ge; 70)</div>
+        <div id="out-s3-passing"></div>
+        <div class="section-label">Names / by id / top / average</div>
+        <pre class="output" id="out-s3-misc"></pre>
+        <div class="section-label">With pass/fail flag (new array)</div>
+        <div id="out-s3-flagged"></div>
+        <div class="note"><b>Insight:</b> <code class="inline">{ ...s, passed: ... }</code> makes a shallow copy of each student and adds a field — the original array still has no <code class="inline">passed</code> key.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">4</span>Objects</h2>
+        <p class="slide-desc">A user object with a nested address; read, update, destructure, rename.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const user = {
+  id: 1,
+  name: "Nurlybek",
+  age: 23,
+  address: { city: "Almaty", street: "Dostyk Ave" },
+};
+
+const originalName = user.name;
+const originalCity = user.address.city;
+
+user.age = 24;
+user.email = "nurlybek@example.com";
+delete user.address.street;
+
+const { name, age } = user;
+const { address: { city } } = user;
+const { name: userName } = user;</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s4"></pre>
+        <div class="note"><b>Note:</b> "remove the street" — since <code class="inline">street</code> lives inside <code class="inline">address</code>, I used <code class="inline">delete user.address.street</code>.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">5</span>Values and References</h2>
+        <p class="slide-desc">Why <code class="inline">copy = original</code> is dangerous for objects, and how to copy safely.</p>
+        <div class="section-label">Part A — same reference</div>
+        <pre class="code">const original = { name: "Alice", score: 10 };
+const copy = original;
+copy.score = 99;</pre>
+        <pre class="output" id="out-s5-a"></pre>
+        <div class="note"><b>Why:</b> objects are reference values. <code class="inline">copy = original</code> copies the memory address, so both point to the same object.</div>
+        <div class="section-label">Part B — shallow copy with spread</div>
+        <pre class="code">const original2 = { name: "Alice", score: 10 };
+const properCopy = { ...original2 };
+properCopy.score = 50;</pre>
+        <pre class="output" id="out-s5-b"></pre>
+        <div class="section-label">Part C — spread only copies one level deep</div>
+        <pre class="code">const userA = { name: "Alice", address: { city: "Almaty" } };
+const userB = { ...userA };
+userB.address.city = "Astana";</pre>
+        <pre class="output" id="out-s5-c"></pre>
+        <div class="note"><b>Correct nested copy:</b> <code class="inline">{ ...userA, address: { ...userA.address } }</code> (or <code class="inline">structuredClone(userA)</code>) — shown below.</div>
+        <pre class="output" id="out-s5-d"></pre>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">6</span>Functions</h2>
+        <p class="slide-desc">Five small utility functions, one written both as a function declaration and as an arrow function.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">function isEven(number) {
+  return number % 2 === 0;
+}
+const isEvenArrow = (number) => number % 2 === 0;
+
+function getFullName(firstName, lastName) {
+  return `${firstName} ${lastName}`;
+}
+
+const calculatePrice = (price, quantity) => price * quantity;
+const calculateDiscount = (price, percent) => price - (price * percent) / 100;
+const getMax = (a, b) => (a > b ? a : b);</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s6"></pre>
+        <div class="note"><b>Insight:</b> arrow functions with a single expression can skip <code class="inline">return</code> and the braces entirely.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">7</span>Functions as Values</h2>
+        <p class="slide-desc">Passing a function into another function (first-class / higher-order functions).</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const add = (a, b) => a + b;
+const multiply = (a, b) => a * b;
+
+function calculate(a, b, operation) {
+  return operation(a, b);
+}
+
+calculate(5, 3, add);
+calculate(5, 3, multiply);</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s7"></pre>
+        <div class="qa"><span class="q">Can functions be stored in variables?</span> Yes — functions are values, just like numbers or strings.</div>
+        <div class="qa"><span class="q">Can functions be passed to other functions?</span> Yes — that's the basis of callbacks, <code class="inline">map</code>/<code class="inline">filter</code>/<code class="inline">reduce</code>.</div>
+        <div class="qa"><span class="q">add vs add()?</span> <code class="inline">add</code> is a reference to the function; <code class="inline">add()</code> calls it.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">8</span>Scope</h2>
+        <p class="slide-desc">Global, function, and block scope, plus var vs let vs const leakage.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const message = "global";
+
+function scopeDemo() {
+  let message = "function";
+  const insideFunction = message;
+  {
+    let message = "block";
+    var insideBlockValue = message;
+  }
+  const afterBlock = message;
+  return { insideFunction, insideBlockValue, afterBlock };
+}
+
+{
+  var varInBlock = "I am var";
+  let letInBlock = "I am let";
+  const constInBlock = "I am const";
+}
+varInBlock;
+letInBlock;
+constInBlock;</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s8"></pre>
+        <div class="qa"><span class="q">Global scope</span> — declared outside any function/block, visible everywhere.</div>
+        <div class="qa"><span class="q">Function scope</span> — variables inside a function are only visible in that function.</div>
+        <div class="qa"><span class="q">Block scope</span> — <code class="inline">let</code>/<code class="inline">const</code> inside <code class="inline">{ }</code> only exist in that block.</div>
+        <div class="qa"><span class="q">var vs let vs const</span> — <code class="inline">var</code> ignores block boundaries; <code class="inline">let</code>/<code class="inline">const</code> are block-scoped; <code class="inline">const</code> can't be reassigned.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">9</span>Closure</h2>
+        <p class="slide-desc">A counter factory whose returned function "remembers" its own private count.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">function createCounter() {
+  let count = 0;
+  return function () {
+    count += 1;
+    return count;
+  };
+}
+
+const counterA = createCounter();
+const counterB = createCounter();
+
+counterA(); counterA(); counterA();
+counterB();
+
+function createAdder(value) {
+  return function (x) { return x + value; };
+}
+const addFive = createAdder(5);
+addFive(10);
+addFive(20);</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s9"></pre>
+        <div class="note"><b>Why it works:</b> a closure keeps a live link to the variables of the scope it was created in. Each call to <code class="inline">createCounter()</code> makes a fresh <code class="inline">count</code>.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">10</span>Destructuring, Spread and Rest</h2>
+        <p class="slide-desc">Pulling values out, copying with spread, and collecting arguments with rest.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const numbersArr = [10, 20, 30, 40];
+const [first, second] = numbersArr;
+
+const user = { id: 1, name: "Anna", age: 21 };
+const { name, age } = user;
+
+const numbersPlus50 = [...numbersArr, 50];
+const olderUser      = { ...user, age: 22 };
+const userWithEmail  = { ...user, email: "anna@example.com" };
+
+const arrA = [1, 2], arrB = [3, 4];
+const combined = [...arrA, ...arrB];
+
+function sum(...numbers) {
+  return numbers.reduce((total, n) => total + n, 0);
+}
+sum(1, 2);
+sum(1, 2, 3, 4);</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s10"></pre>
+        <div class="note"><b>Spread vs rest:</b> spread expands an array/object into individual elements; rest collects individual arguments back into an array.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">11</span>Optional Chaining and Default Values</h2>
+        <p class="slide-desc">Safely reading a nested property that might not exist, and comparing <code class="inline">||</code> vs <code class="inline">??</code>.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const userWithAddress    = { name: "Aika",  address: { city: "Almaty" } };
+const userWithoutAddress = { name: "Nurlan" };
+
+userWithoutAddress.address.city;
+
+const safeCity   = userWithoutAddress.address?.city;
+const cityOrText = userWithoutAddress.address?.city ?? "City not specified";</pre>
+        <div class="section-label">Output</div>
+        <pre class="output" id="out-s11-main"></pre>
+        <div class="section-label"><code class="inline">||</code> vs <code class="inline">??</code></div>
+        <div id="out-s11-table"></div>
+        <div class="note"><b>What I noticed:</b> <code class="inline">||</code> falls back on any falsy value; <code class="inline">??</code> only falls back on <code class="inline">null</code>/<code class="inline">undefined</code>.</div>
+      </div>
+
+      <div class="slide">
+        <h2 class="slide-title"><span class="num">★</span>Final Task — Student Grade Report</h2>
+        <p class="slide-desc">Combining everything above into a small set of reusable, non-mutating helper functions.</p>
+        <div class="section-label">Code</div>
+        <pre class="code">const students = [
+  { id: 1, name: "Anna",  age: 21, grades: [85, 90, 78] },
+  { id: 2, name: "John",  age: 22, grades: [60, 55, 58] },
+  { id: 3, name: "Sara",  age: 20, grades: [91, 95, 89] },
+  { id: 4, name: "Mike",  age: 23, grades: [40, 65, 50] },
+  { id: 5, name: "Dana",  age: 21, grades: [72, 68, 74] },
+];
+const PASS_MARK = 60;
+
+const getAverage        = (grades) => grades.reduce((sum, g) => sum + g, 0) / grades.length;
+const getStudentAverage = (student) => getAverage(student.grades);
+const getPassedStudents = (students) => students.filter((s) => getStudentAverage(s) >= PASS_MARK);
+const getStudentNames   = (students) => students.map((s) => s.name);
+const findStudent       = (students, id) => students.find((s) => s.id === id);
+const getTopStudent     = (students) =>
+  students.reduce((top, s) => (getStudentAverage(s) > getStudentAverage(top) ? s : top));
+
+const report = students.map((s) => ({
+  id: s.id,
+  name: s.name,
+  average: Math.round(getStudentAverage(s) * 100) / 100,
+  passed: getStudentAverage(s) >= PASS_MARK,
+}));</pre>
+        <div class="section-label">Students (original data, untouched)</div>
+        <div id="out-final-original"></div>
+        <div class="section-label">Helper results</div>
+        <pre class="output" id="out-final-helpers"></pre>
+        <div class="section-label">Final report</div>
+        <div id="out-final-report"></div>
+        <div class="note"><b>Insight:</b> every helper here is a pure function — it takes data in and returns new data out without touching its arguments.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn" aria-label="Previous task">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <span class="counter" id="counter">Task 1 of 12</span>
+    <button class="ctrl-btn" id="nextBtn" aria-label="Next task">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <div class="dots" id="dots"></div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
